@@ -1,4 +1,23 @@
-export default function HomePage() {
+import { client } from '@/src/sanity/client'
+import { HeroRoles } from '@/app/components/HeroRoles/HeroRoles'
+import { IProfile } from '@/app/types/profile'
+
+const PROFILE_QUERY = `
+*[
+  _type == "profile"
+][0]{name, roles[] {
+_key,
+title,
+emphasized
+}}
+`
+
+const options = { next: { revalidate: 30 } }
+
+export default async function HomePage() {
+  const profile = await client.fetch<IProfile | null>(PROFILE_QUERY, {}, options)
+  console.log(profile)
+
   return (
     <>
       <section className="hero" id="top" aria-labelledby="page-title">
@@ -6,14 +25,12 @@ export default function HomePage() {
           <p className="eyebrow">
             <span></span> Slovakia, EU
           </p>
-          <h1 id="page-title">Jozef Balint</h1>
-          <p className="hero-role">
-            Senior Frontend Engineer
-            <br />
-            <em>Accessibility Specialist</em>
-            <br />
-            Frontend Dev Lead
-          </p>
+          {profile && (
+            <>
+              <h1 id="page-title">{profile.name}</h1>
+              <HeroRoles roles={profile.roles} />
+            </>
+          )}
           <p className="hero-intro">
             I build accessible, high-traffic web applications and the frontend systems that keep
             them maintainable.
