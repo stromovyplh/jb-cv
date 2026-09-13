@@ -5,6 +5,11 @@ export default defineCliConfig({
     projectId: 'sxm7e08p',
     dataset: 'production'
   },
+  typegen: {
+    schema: './schema.json',
+    path: '../jb-cv/src/**/*.{ts,tsx,js,jsx}',
+    generates: '../jb-cv/src/sanity/sanity.types.ts'
+  },
   deployment: {
     /**
      * Enable auto-updates for studios.
