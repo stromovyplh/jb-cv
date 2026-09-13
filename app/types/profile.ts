@@ -1,6 +1,3 @@
-import { THeroRole } from '@/app/types/components'
+import { PROFILE_QUERY_RESULT } from '@/src/sanity/sanity.types'
 
-export interface IProfile {
-  name: string
-  roles: Array<THeroRole>
-}
+export type TProfileQueryResult = NonNullable<PROFILE_QUERY_RESULT>

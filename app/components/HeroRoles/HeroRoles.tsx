@@ -1,9 +1,9 @@
 import { Fragment } from 'react'
 import styles from './HeroRoles.module.css'
-import type { THeroRole } from '@/app/types/components'
+import type { TProfileQueryResult } from '@/app/types/profile'
 
 interface IHeroRolesProps {
-  roles: Array<THeroRole>
+  roles: NonNullable<TProfileQueryResult['roles']>
   className?: string
 }
 
