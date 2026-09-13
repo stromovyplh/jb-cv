@@ -1,76 +1,31 @@
 import { client } from '@/src/sanity/client'
-import { HeroRoles } from '@/app/components/HeroRoles/HeroRoles'
-import { IProfile } from '@/app/types/profile'
-
-const PROFILE_QUERY = `
-*[
-  _type == "profile"
-][0]{name, roles[] {
-_key,
-title,
-emphasized
-}}
-`
-
-const options = { next: { revalidate: 30 } }
+import { PROFILE_QUERY } from '@/src/sanity/queries/profile'
+import { profileCacheOptions } from '@/src/sanity/cache'
+import { notFound } from 'next/navigation'
+import { HeroHeader } from '@/app/components/HeroHeader/HeroHeader'
+import type { PROFILE_QUERY_RESULT } from '@/src/sanity/sanity.types'
 
 export default async function HomePage() {
-  const profile = await client.fetch<IProfile | null>(PROFILE_QUERY, {}, options)
-  console.log(profile)
+  const profile = await client.fetch<PROFILE_QUERY_RESULT | null>(
+    PROFILE_QUERY,
+    {},
+    profileCacheOptions,
+  )
+
+  if (!profile) notFound()
 
   return (
     <>
-      <section className="hero" id="top" aria-labelledby="page-title">
-        <div className="hero-copy">
-          <p className="eyebrow">
-            <span></span> Slovakia, EU
-          </p>
-          {profile && (
-            <>
-              <h1 id="page-title">{profile.name}</h1>
-              <HeroRoles roles={profile.roles} />
-            </>
-          )}
-          <p className="hero-intro">
-            I build accessible, high-traffic web applications and the frontend systems that keep
-            them maintainable.
-          </p>
-          <div className="hero-actions">
-            <a className="button button-primary" href="mailto:jozef.balint@gmail.com">
-              Start a conversation
-            </a>
-            <a
-              className="button button-secondary"
-              href="/assets/Jozef_Balint_CV_FE_Engineer.pdf"
-              download
-            >
-              Download CV
-            </a>
-          </div>
-        </div>
-        <aside className="impact-card" aria-label="Career highlights">
-          <p className="card-label">Selected impact</p>
-          <dl>
-            <div>
-              <dt>6.5M</dt>
-              <dd>portal users served</dd>
-            </div>
-            <div>
-              <dt>14K</dt>
-              <dd>relocations supported</dd>
-            </div>
-            <div>
-              <dt>~40%</dt>
-              <dd>lower UI latency</dd>
-            </div>
-            <div>
-              <dt>8+</dt>
-              <dd>years in frontend</dd>
-            </div>
-          </dl>
-        </aside>
-      </section>
-
+      <HeroHeader
+        id="top"
+        location={profile.location}
+        name={profile.name}
+        roles={profile.roles ?? []}
+        impactMetrics={profile.impactMetrics ?? []}
+        intro={profile.intro}
+        email={profile.email}
+        cv={profile.cv}
+      />
       <section className="intro section-shell" aria-labelledby="profile-title">
         <div className="section-index">01</div>
         <div>
