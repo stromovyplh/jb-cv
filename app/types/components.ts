@@ -5,3 +5,9 @@ export interface IBaseButtonProps extends ButtonHTMLAttributes<HTMLButtonElement
   label: string
   classNames?: string[]
 }
+
+export type THeroRole = {
+  _key: string
+  title: string
+  emphasized?: boolean
+}
