@@ -1,3 +1,4 @@
-import { profileType} from './postType'
+import {heroRole} from './objects/heroRole'
+import {profile} from './documents/profile'
 
-export const schemaTypes = [profileType]
+export const schemaTypes = [profile, heroRole]
