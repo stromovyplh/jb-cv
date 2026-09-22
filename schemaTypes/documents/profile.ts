@@ -6,6 +6,11 @@ export const profile = defineType({
   type: 'document',
   groups: [
     {name: 'hero', title: 'Hero'},
+    {name: 'profile', title: 'Profile'},
+    {name: 'skills', title: 'Skills'},
+    {name: 'experience', title: 'Experience'},
+    {name: 'projects', title: 'Projects'},
+    {name: 'details', title: 'Education & languages'},
     {name: 'contact', title: 'Contact'},
   ],
   fields: [
@@ -49,11 +54,90 @@ export const profile = defineType({
         }),
       ],
     }),
+
+    defineField({
+      name: 'profileSection',
+      type: 'sectionHeading',
+      group: 'profile',
+    }),
+    defineField({
+      name: 'profileBody',
+      title: 'Profile body',
+      type: 'array',
+      group: 'profile',
+      of: [defineArrayMember({type: 'block'})],
+    }),
+
+    defineField({
+      name: 'skillsSection',
+      type: 'sectionHeading',
+      group: 'skills',
+    }),
+    defineField({
+      name: 'skillGroups',
+      type: 'array',
+      group: 'skills',
+      of: [defineArrayMember({type: 'skillGroup'})],
+    }),
+
+    defineField({
+      name: 'experienceSection',
+      type: 'sectionHeading',
+      group: 'experience',
+    }),
+    defineField({
+      name: 'experience',
+      type: 'array',
+      group: 'experience',
+      of: [defineArrayMember({type: 'experience'})],
+    }),
+
+    defineField({
+      name: 'projectsSection',
+      type: 'sectionHeading',
+      group: 'projects',
+    }),
+    defineField({
+      name: 'projects',
+      type: 'array',
+      group: 'projects',
+      of: [defineArrayMember({type: 'project'})],
+    }),
+
+    defineField({
+      name: 'education',
+      type: 'array',
+      group: 'details',
+      of: [defineArrayMember({type: 'education'})],
+    }),
+    defineField({
+      name: 'languages',
+      type: 'array',
+      group: 'details',
+      of: [defineArrayMember({type: 'language'})],
+    }),
+
+    defineField({
+      name: 'contactHeading',
+      type: 'string',
+      group: 'contact',
+    }),
     defineField({
       name: 'email',
       type: 'string',
       group: 'contact',
       validation: (rule) => rule.required().email(),
+    }),
+    defineField({
+      name: 'phone',
+      type: 'string',
+      group: 'contact',
+    }),
+    defineField({
+      name: 'links',
+      type: 'array',
+      group: 'contact',
+      of: [defineArrayMember({type: 'externalLink'})],
     }),
     defineField({
       name: 'cvFile',
