@@ -4,7 +4,7 @@ export default function HomePage() {
       <section className="hero" id="top" aria-labelledby="page-title">
         <div className="hero-copy">
           <p className="eyebrow">
-            <span></span> Lisbon, Portugal
+            <span></span> Slovakia, EU
           </p>
           <h1 id="page-title">Jozef Balint</h1>
           <p className="hero-role">
@@ -22,7 +22,11 @@ export default function HomePage() {
             <a className="button button-primary" href="mailto:jozef.balint@gmail.com">
               Start a conversation
             </a>
-            <a className="button button-secondary" href="/assets/Jozef_Balint_CV.pdf" download>
+            <a
+              className="button button-secondary"
+              href="/assets/Jozef_Balint_CV_FE_Engineer.pdf"
+              download
+            >
               Download CV
             </a>
           </div>
