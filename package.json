@@ -1,0 +1,11 @@
+{
+  "name": "jb-cv-monorepo",
+  "private": true,
+  "scripts": {
+    "dev:web": "pnpm --filter jb-cv-fe dev",
+    "dev:studio": "pnpm --filter jb-cv-studio dev",
+    "build:web": "pnpm --filter jb-cv-fe build",
+    "build:studio": "pnpm --filter jb-cv-studio build",
+    "deploy:studio": "pnpm --filter jb-cv-studio deploy"
+  }
+}
