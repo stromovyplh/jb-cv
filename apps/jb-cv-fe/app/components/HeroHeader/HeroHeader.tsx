@@ -1,6 +1,6 @@
-import { HeroRoles } from '@/apps/jb-cv-fe/app/components/HeroRoles/HeroRoles'
+import { HeroRoles } from '@/app/components/HeroRoles/HeroRoles'
 import styles from './HeroHeader.module.css'
-import type { TProfileQueryResult } from '@/apps/jb-cv-fe/app/types/profile'
+import type { TProfileQueryResult } from '@/app/types/profile'
 
 interface IHeroHeaderProps {
   id: string

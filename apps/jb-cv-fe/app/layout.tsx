@@ -2,7 +2,7 @@ import './globals.css'
 
 import type { Metadata } from 'next'
 import React from 'react'
-import { PrintButton } from '@/apps/jb-cv-fe/app/components/PrintButton'
+import { PrintButton } from '@/app/components/PrintButton'
 
 export const metadata: Metadata = {
   title: 'Jozef Balint — Senior Frontend Engineer',

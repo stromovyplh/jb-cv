@@ -1,4 +1,4 @@
-import type { TProfileQueryResult } from '@/apps/jb-cv-fe/app/types/profile'
+import type { TProfileQueryResult } from '@/app/types/profile'
 
 export interface IContactSectionProps {
   heading: TProfileQueryResult['contactHeading']

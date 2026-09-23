@@ -7,8 +7,8 @@ export default defineCliConfig({
   },
   typegen: {
     schema: './schema.json',
-    path: '../jb-cv/src/**/*.{ts,tsx,js,jsx}',
-    generates: '../jb-cv/src/sanity/sanity.types.ts'
+    path: '../jb-cv-fe/src/**/*.{ts,tsx,js,jsx}',
+    generates: '../jb-cv-fe/src/sanity/sanity.types.ts'
   },
   deployment: {
     /**

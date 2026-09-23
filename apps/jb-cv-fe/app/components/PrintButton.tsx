@@ -1,8 +1,8 @@
 'use client'
 
-import { BaseButton } from '@/apps/jb-cv-fe/app/components/BaseButton/BaseButton'
-import type { IBaseButtonProps } from '@/apps/jb-cv-fe/app/types/components'
-import styles from '@/apps/jb-cv-fe/app/components/BaseButton/BaseButton.module.css'
+import { BaseButton } from '@/app/components/BaseButton/BaseButton'
+import type { IBaseButtonProps } from '@/app/types/components'
+import styles from '@/app/components/BaseButton/BaseButton.module.css'
 
 interface IPrintButtonProps extends IBaseButtonProps {}
 
