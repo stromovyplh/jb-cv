@@ -1,4 +1,4 @@
-import type { TProfileQueryResult } from '@/app/types/profile'
+import type { TProfileQueryResult } from '@/apps/jb-cv-fe/app/types/profile'
 
 export interface ISkillsSectionProps {
   heading: TProfileQueryResult['skillsSection']

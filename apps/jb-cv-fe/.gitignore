@@ -1,6 +1,6 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-.idea/
+../../.idea/
 
 # dependencies
 /node_modules
@@ -41,4 +41,4 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-/src/sanity/sanity.types.ts
+/apps/jb-cv-fe/src/sanity/sanity.types.ts

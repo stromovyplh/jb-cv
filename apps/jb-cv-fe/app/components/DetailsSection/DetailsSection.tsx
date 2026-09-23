@@ -1,5 +1,5 @@
-import type { TProfileQueryResult } from '@/app/types/profile'
-import { proficiencyLabels } from '@/app/constants'
+import type { TProfileQueryResult } from '@/apps/jb-cv-fe/app/types/profile'
+import { proficiencyLabels } from '@/apps/jb-cv-fe/app/constants'
 
 export interface IDetailsSectionProps {
   education: NonNullable<TProfileQueryResult['education']>

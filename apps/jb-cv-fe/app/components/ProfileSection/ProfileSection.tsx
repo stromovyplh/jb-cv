@@ -1,5 +1,5 @@
 import { PortableText } from 'next-sanity'
-import type { TProfileQueryResult } from '@/app/types/profile'
+import type { TProfileQueryResult } from '@/apps/jb-cv-fe/app/types/profile'
 
 export interface IProfileSectionProps {
   heading: TProfileQueryResult['profileSection']

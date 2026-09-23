@@ -1,5 +1,5 @@
-import type { TProfileQueryResult } from '@/app/types/profile'
-import { formatMonth } from '@/app/utils'
+import type { TProfileQueryResult } from '@/apps/jb-cv-fe/app/types/profile'
+import { formatMonth } from '@/apps/jb-cv-fe/app/utils'
 
 export interface IExperienceSectionProps {
   heading: TProfileQueryResult['experienceSection']
