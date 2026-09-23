@@ -1,6 +1,6 @@
 export const profileCacheOptions = {
   next: {
-    revalidate: 3600,
+    revalidate: 86400,
     tags: ['profile'],
   },
 }
