@@ -1,7 +1,7 @@
 import type { QueryOptions } from 'next-sanity'
 
-export const profileCacheOptions: QueryOptions =
-    process.env.NODE_ENV === 'development'
+export const profileCacheOptions =
+    (process.env.NODE_ENV === 'development'
         ? {
           cache: 'no-store',
         }
@@ -10,4 +10,4 @@ export const profileCacheOptions: QueryOptions =
             revalidate: 86400,
             tags: ['profile'],
           },
-        }
+        }) satisfies QueryOptions

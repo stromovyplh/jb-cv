@@ -43,3 +43,4 @@ yarn-error.log*
 next-env.d.ts
 /apps/jb-cv-fe/src/sanity/sanity.types.ts
 /src/sanity/sanity.types.ts
+/.htaccess

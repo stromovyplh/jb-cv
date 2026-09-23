@@ -10,6 +10,9 @@ importers:
 
   apps/jb-cv-fe:
     dependencies:
+      '@sanity/client':
+        specifier: ^8.6.2
+        version: 8.6.2
       '@sanity/image-url':
         specifier: ^2.1.1
         version: 2.1.1

@@ -1,11 +1,12 @@
 import { revalidateTag } from 'next/cache'
 import { parseBody } from 'next-sanity/webhook'
+import {NextRequest} from "next/server";
 
 interface ProfileWebhookPayload {
   _type?: string
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   const secret = process.env.SANITY_REVALIDATE_SECRET
 
   if (!secret) {
