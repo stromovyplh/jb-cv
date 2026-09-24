@@ -5,8 +5,6 @@ import { getPublishedProfileForAI } from '@/src/sanity/getPublishedProfileForAI'
 
 export const runtime = 'nodejs'
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
-
 type ChatMessage = {
   role: 'user' | 'assistant'
   content: string
@@ -46,6 +44,17 @@ export async function POST(request: Request) {
   if (!Array.isArray(history) || history.length > 8 || !history.every(isChatMessage)) {
     return NextResponse.json({ error: 'Invalid conversation history.' }, { status: 400 })
   }
+
+  const apiKey = process.env.OPENAI_API_KEY
+  if (!apiKey) {
+    console.error('OPENAI_API_KEY is not configured')
+    return NextResponse.json(
+      { error: 'The CV assistant is temporarily unavailable.' },
+      { status: 503 },
+    )
+  }
+
+  const openai = new OpenAI({ apiKey })
 
   try {
     const profile = await getPublishedProfileForAI()
