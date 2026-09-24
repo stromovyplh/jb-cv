@@ -22,7 +22,7 @@
     "react-dom": "^19.2.8"
   },
   "devDependencies": {
-    "@types/node": "^26.4.1",
+    "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19.2.7",
     "eslint": "^9.39.5",
