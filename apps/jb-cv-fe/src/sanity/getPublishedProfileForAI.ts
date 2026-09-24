@@ -1,10 +1,11 @@
+import { profileCacheOptions } from '@/src/sanity/cache'
 import { client } from '@/src/sanity/client'
 import { PROFILE_QUERY } from '@/src/sanity/queries/profile' // adjust to your actual path
 
 export async function getPublishedProfileForAI() {
   const profile = await client
-    .withConfig({ perspective: 'published', useCdn: true })
-    .fetch(PROFILE_QUERY)
+    .withConfig({ perspective: 'published', useCdn: false })
+    .fetch(PROFILE_QUERY, {}, profileCacheOptions)
 
   if (!profile) {
     throw new Error('Published CV profile was not found')

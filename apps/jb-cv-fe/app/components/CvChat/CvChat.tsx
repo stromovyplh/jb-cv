@@ -10,12 +10,17 @@ type Message = {
   text: string
 }
 
+type StreamEvent = {
+  type: 'delta' | 'done' | 'error'
+  text?: string
+}
+
 export const CvChat = () => {
   const [question, setQuestion] = useState('')
   const [messages, setMessages] = useState<Message[]>([])
   const [loading, setLoading] = useState(false)
-
   const [error, setError] = useState('')
+
   const endRef = useRef<HTMLDivElement>(null)
   const nextId = useRef(0)
 
@@ -29,7 +34,15 @@ export const CvChat = () => {
     const text = question.trim()
     if (!text || loading) return
 
-    setMessages((current) => [...current, { id: nextId.current++, role: 'visitor', text }])
+    const history = messages.slice(-8).map((message) => ({
+      role: message.role === 'visitor' ? ('user' as const) : ('assistant' as const),
+      content: message.text,
+    }))
+
+    const questionId = nextId.current++
+    let answerId: number | undefined
+
+    setMessages((current) => [...current, { id: questionId, role: 'visitor', text }])
     setQuestion('')
     setError('')
     setLoading(true)
@@ -38,20 +51,74 @@ export const CvChat = () => {
       const response = await fetch('/api/cv-chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question: text }),
+        body: JSON.stringify({ question: text, history }),
       })
 
-      const data: { answer?: string; error?: string } = await response.json()
-
-      if (!response.ok || !data.answer) {
+      if (!response.ok) {
+        const data: { error?: string } = await response.json()
         throw new Error(data.error || 'Could not get an answer.')
       }
 
-      setMessages((current) => [
-        ...current,
-        { id: nextId.current++, role: 'assistant', text: data.answer! },
-      ])
+      if (!response.body) {
+        throw new Error('Streaming is unavailable.')
+      }
+
+      answerId = nextId.current++
+      const currentAnswerId = answerId
+
+      setMessages((current) => [...current, { id: currentAnswerId, role: 'assistant', text: '' }])
+
+      const reader = response.body.getReader()
+      const decoder = new TextDecoder()
+
+      let buffer = ''
+      let completed = false
+
+      while (true) {
+        const { value, done } = await reader.read()
+
+        if (done) break
+
+        buffer += decoder.decode(value, { stream: true })
+
+        const lines = buffer.split('\n')
+        buffer = lines.pop() ?? ''
+
+        for (const line of lines) {
+          if (!line) continue
+
+          const streamEvent = JSON.parse(line) as StreamEvent
+
+          if (streamEvent.type === 'error') {
+            throw new Error('The answer was interrupted. Please try again.')
+          }
+
+          if (streamEvent.type === 'done') {
+            completed = true
+          }
+
+          if (streamEvent.type === 'delta' && streamEvent.text) {
+            const delta = streamEvent.text
+
+            setMessages((current) =>
+              current.map((message) =>
+                message.id === currentAnswerId
+                  ? { ...message, text: message.text + delta }
+                  : message,
+              ),
+            )
+          }
+        }
+      }
+
+      if (!completed) {
+        throw new Error('The answer was interrupted. Please try again.')
+      }
     } catch (cause) {
+      setMessages((current) =>
+        current.filter((message) => message.id !== questionId && message.id !== answerId),
+      )
+      setQuestion(text)
       setError(
         cause instanceof Error ? cause.message : 'The CV assistant is temporarily unavailable.',
       )
@@ -93,20 +160,22 @@ export const CvChat = () => {
                 <span className={styles.speaker}>
                   {message.role === 'visitor' ? 'You' : 'CV assistant'}
                 </span>
-                <p>{message.text}</p>
+                <p>{message.text || (message.role === 'assistant' ? 'Writing…' : '')}</p>
               </div>
             ))}
 
             {loading && (
               <p className={styles.activity} role="status">
-                Checking the CV…
+                Generating answer…
               </p>
             )}
+
             {error && (
               <p className={styles.error} role="alert">
                 {error}
               </p>
             )}
+
             <div ref={endRef} />
           </div>
 
@@ -114,6 +183,7 @@ export const CvChat = () => {
             <label className={styles.label} htmlFor="cv-question">
               Ask a question about my CV
             </label>
+
             <textarea
               id="cv-question"
               value={question}
@@ -130,6 +200,7 @@ export const CvChat = () => {
                 }
               }}
             />
+
             <button
               className="button button-primary"
               type="submit"
@@ -139,6 +210,7 @@ export const CvChat = () => {
             </button>
           </form>
         </div>
+
         <p className={styles.hint}>Enter to send · Shift+Enter for a new line</p>
       </div>
     </section>
