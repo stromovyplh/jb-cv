@@ -1,0 +1,111 @@
+name: Deploy jb-cv-fe to GreenGeeks
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: jb-cv-fe-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: production
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install and build
+        env:
+          BUILD_ENV_LOCAL: ${{ secrets.BUILD_ENV_LOCAL }}
+        run: |
+          set -euo pipefail
+          : "${BUILD_ENV_LOCAL:?Set BUILD_ENV_LOCAL secret with production build variables}"
+          printf '%s\n' "$BUILD_ENV_LOCAL" > apps/jb-cv-fe/.env.local
+          chmod 600 apps/jb-cv-fe/.env.local
+          pnpm install --frozen-lockfile
+          pnpm typegen:studio
+          test -f apps/jb-cv-fe/src/sanity/sanity.types.ts
+          pnpm build:web          
+          rm -f apps/jb-cv-fe/.env.local
+
+      - name: Assemble and verify standalone output
+        run: |
+          set -euo pipefail
+          app='apps/jb-cv-fe'
+          mkdir -p "$RUNNER_TEMP/jb-cv-deploy"
+          # pnpm's links do not survive a normal FTP upload. Copy their targets.
+          cp -aL "$app/.next/standalone/." "$RUNNER_TEMP/jb-cv-deploy/"
+          mkdir -p "$RUNNER_TEMP/jb-cv-deploy/$app/.next"
+          cp -a "$app/.next/static" "$RUNNER_TEMP/jb-cv-deploy/$app/.next/"
+          if [ -d "$app/public" ]; then
+            cp -a "$app/public" "$RUNNER_TEMP/jb-cv-deploy/$app/"
+          fi
+          test -f "$RUNNER_TEMP/jb-cv-deploy/$app/server.js"
+          test -f "$RUNNER_TEMP/jb-cv-deploy/$app/.next/BUILD_ID"
+          cd "$RUNNER_TEMP/jb-cv-deploy/$app"
+          node -e "for (const p of ['next', 'react', '@next/env', '@swc/helpers/_/_interop_require_default']) require.resolve(p)"
+          test -z "$(find "$RUNNER_TEMP/jb-cv-deploy" -type l -print -quit)"
+
+      - name: Configure SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          : "${SSH_PRIVATE_KEY:?Set SSH_PRIVATE_KEY secret}"
+          : "${SSH_KNOWN_HOSTS:?Set SSH_KNOWN_HOSTS secret}"
+          install -d -m 700 "$HOME/.ssh"
+          printf '%s\n' "$SSH_PRIVATE_KEY" > "$HOME/.ssh/id_deploy"
+          chmod 600 "$HOME/.ssh/id_deploy"
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+          chmod 600 "$HOME/.ssh/known_hosts"
+
+      - name: Upload and restart
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          GG_REMOTE_DIR: ${{ vars.GG_REMOTE_DIR }}
+        run: |
+          set -euo pipefail
+          : "${SSH_HOST:?Set SSH_HOST secret}"
+          : "${SSH_USER:?Set SSH_USER secret}"
+          : "${GG_REMOTE_DIR:?Set GG_REMOTE_DIR variable (e.g. public_html/jozef-balint.com)}"
+          # This value is a path relative to the SSH user's home directory.
+          [[ "$GG_REMOTE_DIR" =~ ^public_html/[A-Za-z0-9._/-]+$ && "$GG_REMOTE_DIR" != *'..'* ]] || exit 1
+          deploy_dir="$RUNNER_TEMP/jb-cv-deploy"
+          ssh_opts="-i $HOME/.ssh/id_deploy -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o BatchMode=yes"
+          ssh -i "$HOME/.ssh/id_deploy" -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o BatchMode=yes \
+            "$SSH_USER@$SSH_HOST" "mkdir -p ~/$GG_REMOTE_DIR/apps ~/$GG_REMOTE_DIR/node_modules ~/$GG_REMOTE_DIR/tmp"
+          # Upload only the two build directories. Do not delete GreenGeeks'
+          # .htaccess, logs, app settings, or provider-installed dependencies.
+          rsync -az --delay-updates -e "ssh $ssh_opts" "$deploy_dir/apps/" \
+            "$SSH_USER@$SSH_HOST:~/$GG_REMOTE_DIR/apps/"
+          rsync -az --delay-updates -e "ssh $ssh_opts" "$deploy_dir/node_modules/" \
+            "$SSH_USER@$SSH_HOST:~/$GG_REMOTE_DIR/node_modules/"
+          ssh -i "$HOME/.ssh/id_deploy" -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o BatchMode=yes \
+            "$SSH_USER@$SSH_HOST" "cat ~/$GG_REMOTE_DIR/apps/jb-cv-fe/.next/BUILD_ID" \
+            > "$RUNNER_TEMP/remote-build-id"
+          cmp "$deploy_dir/apps/jb-cv-fe/.next/BUILD_ID" "$RUNNER_TEMP/remote-build-id"
+          printf '%s\n' "$GITHUB_SHA" | ssh -i "$HOME/.ssh/id_deploy" -o IdentitiesOnly=yes \
+            -o StrictHostKeyChecking=yes -o BatchMode=yes "$SSH_USER@$SSH_HOST" \
+            "cat > ~/$GG_REMOTE_DIR/tmp/restart.txt"
+
+      - name: Check website
+        run: curl --fail --location --silent --show-error --retry 5 --retry-delay 5 --retry-connrefused https://jozef-balint.com/ -o /dev/null

@@ -10,6 +10,7 @@
     "dev:studio": "pnpm --filter jb-cv-studio dev",
     "build:web": "pnpm --filter jb-cv-fe build",
     "start:web": "pnpm --filter jb-cv-fe start",
+    "typegen:studio": "pnpm --filter jb-cv-studio typegen",
     "build:studio": "pnpm --filter jb-cv-studio build",
     "deploy:studio": "pnpm --filter jb-cv-studio deploy"
   }
