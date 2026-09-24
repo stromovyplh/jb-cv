@@ -1,1 +1,42 @@
 /greengeeks_known_hosts
+/.idea/
+
+# Dependencies and package managers
+**/node_modules/
+**/.pnp
+**/.pnp.*
+**/.yarn/*
+!**/.yarn/patches/
+!**/.yarn/plugins/
+!**/.yarn/releases/
+!**/.yarn/versions/
+
+# Build output
+/apps/jb-cv-fe/.next/
+/apps/jb-cv-fe/out/
+/apps/jb-cv-fe/build/
+/apps/jb-cv-studio/dist/
+/apps/jb-cv-studio/.sanity/
+
+# Generated Sanity files
+/apps/jb-cv-fe/src/sanity/sanity.types.ts
+/apps/jb-cv-studio/schema.json
+
+# Tests, logs and temporary files
+**/coverage/
+**/logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+*.tsbuildinfo
+/apps/jb-cv-fe/next-env.d.ts
+
+# Local configuration
+**/.env*
+**/*.local
+**/.vercel/
+**/.DS_Store
+*.pem
+/apps/jb-cv-fe/.htaccess
