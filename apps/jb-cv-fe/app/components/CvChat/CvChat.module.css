@@ -1,0 +1,137 @@
+/* CvChat.module.css */
+.content {
+    min-width: 0;
+    max-width: 52rem;
+}
+
+.chat {
+    display: flex;
+    flex-direction: column;
+    height: min(32rem, 70vh);
+    min-height: 22rem;
+    margin-top: 2rem;
+    border: 1px solid currentColor;
+    border-radius: 0.25rem;
+    overflow: hidden;
+}
+
+.messages {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 1rem;
+    min-height: 0;
+    padding: 1.5rem;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+.welcome {
+    max-width: 32rem;
+    margin: auto;
+    text-align: center;
+}
+
+.welcome p + p {
+    opacity: 0.7;
+}
+
+.message {
+    max-width: min(85%, 38rem);
+    padding: 0.9rem 1.1rem;
+    border: 1px solid currentColor;
+    border-radius: 0.25rem;
+}
+
+.message p {
+    margin: 0.35rem 0 0;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.visitor {
+    align-self: flex-end;
+    background: #081426;
+    color: white;
+    border-color: #081426;
+}
+
+.assistant {
+    align-self: flex-start;
+}
+
+.speaker {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.composer {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 0.75rem;
+    padding: 1rem;
+    border-top: 1px solid currentColor;
+}
+
+.label {
+    grid-column: 1 / -1;
+    font-weight: 600;
+}
+
+.composer textarea {
+    min-width: 0;
+    padding: 0.75rem;
+    resize: vertical;
+    border: 1px solid currentColor;
+    border-radius: 0.25rem;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+}
+
+.composer textarea:focus-visible,
+.composer button:focus-visible {
+    outline: 3px solid currentColor;
+    outline-offset: 3px;
+}
+
+.composer button:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+.activity,
+.error {
+    margin: 0;
+}
+
+.error {
+    color: #9b2430;
+}
+
+.hint {
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    opacity: 0.7;
+}
+
+@media (max-width: 40rem) {
+    .chat {
+        height: min(36rem, 75vh);
+    }
+
+    .messages {
+        padding: 1rem;
+    }
+
+    .composer {
+        grid-template-columns: 1fr;
+    }
+
+    .composer button {
+        justify-self: end;
+    }
+}
