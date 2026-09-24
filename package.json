@@ -5,6 +5,7 @@
     "dev:web": "pnpm --filter jb-cv-fe dev",
     "dev:studio": "pnpm --filter jb-cv-studio dev",
     "build:web": "pnpm --filter jb-cv-fe build",
+    "start:web": "pnpm --filter jb-cv-fe start",
     "build:studio": "pnpm --filter jb-cv-studio build",
     "deploy:studio": "pnpm --filter jb-cv-studio deploy"
   }
