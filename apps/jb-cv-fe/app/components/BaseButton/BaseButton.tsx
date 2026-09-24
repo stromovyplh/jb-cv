@@ -1,6 +1,7 @@
 'use client'
 
 import type { IBaseButtonProps } from '@/app/types/components'
+
 import styles from './BaseButton.module.css'
 
 export const BaseButton = (props: IBaseButtonProps) => {

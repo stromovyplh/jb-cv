@@ -1,6 +1,7 @@
 import { HeroRoles } from '@/app/components/HeroRoles/HeroRoles'
-import styles from './HeroHeader.module.css'
 import type { TProfileQueryResult } from '@/app/types/profile'
+
+import styles from './HeroHeader.module.css'
 
 interface IHeroHeaderProps {
   id: string

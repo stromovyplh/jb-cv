@@ -2,11 +2,10 @@
 
 import { BaseButton } from '@/app/components/BaseButton/BaseButton'
 import type { IBaseButtonProps } from '@/app/types/components'
-import styles from '@/app/components/BaseButton/BaseButton.module.css'
 
-interface IPrintButtonProps extends IBaseButtonProps {}
+type TPrintButtonProps = IBaseButtonProps
 
-export const PrintButton = (props: IPrintButtonProps) => {
+export const PrintButton = (props: TPrintButtonProps) => {
   const onPrintClick = () => {
     window.print()
   }

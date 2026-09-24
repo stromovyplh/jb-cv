@@ -1,6 +1,6 @@
 import { revalidateTag } from 'next/cache'
+import { NextRequest } from 'next/server'
 import { parseBody } from 'next-sanity/webhook'
-import {NextRequest} from "next/server";
 
 interface ProfileWebhookPayload {
   _type?: string

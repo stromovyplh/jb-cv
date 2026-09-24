@@ -1,6 +1,8 @@
 import { Fragment } from 'react'
-import styles from './HeroRoles.module.css'
+
 import type { TProfileQueryResult } from '@/app/types/profile'
+
+import styles from './HeroRoles.module.css'
 
 interface IHeroRolesProps {
   roles: NonNullable<TProfileQueryResult['roles']>
