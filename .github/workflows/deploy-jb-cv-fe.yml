@@ -112,12 +112,11 @@ jobs:
         env:
           SSH_HOST: ${{ secrets.SSH_HOST }}
           SSH_USER: ${{ secrets.SSH_USER }}
-          GG_REMOTE_DIR: ${{ vars.GG_REMOTE_DIR }}
+          GG_REMOTE_DIR: public_html/jozef-balint.com
         run: |
           set -euo pipefail
           : "${SSH_HOST:?Set SSH_HOST secret}"
           : "${SSH_USER:?Set SSH_USER secret}"
-          : "${GG_REMOTE_DIR:?Set GG_REMOTE_DIR variable (e.g. public_html/jozef-balint.com)}"
           # This value is a path relative to the SSH user's home directory.
           [[ "$GG_REMOTE_DIR" =~ ^public_html/[A-Za-z0-9._/-]+$ && "$GG_REMOTE_DIR" != *'..'* ]] || exit 1
           deploy_dir="$RUNNER_TEMP/jb-cv-deploy"
