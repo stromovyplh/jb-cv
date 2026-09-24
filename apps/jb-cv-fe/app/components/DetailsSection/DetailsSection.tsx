@@ -1,18 +1,19 @@
-import type { TProfileQueryResult } from '@/app/types/profile'
 import { proficiencyLabels } from '@/app/constants'
+import type { TProfileQueryResult } from '@/app/types/profile'
 
 export interface IDetailsSectionProps {
   education: NonNullable<TProfileQueryResult['education']>
   languages: NonNullable<TProfileQueryResult['languages']>
+  sectionNr: string
 }
 
-export const DetailsSection = ({ education, languages }: IDetailsSectionProps) => {
+export const DetailsSection = ({ education, languages, sectionNr }: IDetailsSectionProps) => {
   if (education.length === 0 && languages.length === 0) return null
 
   return (
     <section className="details section-shell" aria-label="Education and languages">
       <div className="section-index" aria-hidden="true">
-        05
+        {sectionNr}
       </div>
 
       <div className="details-grid">

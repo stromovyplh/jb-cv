@@ -3,9 +3,10 @@ import type { TProfileQueryResult } from '@/app/types/profile'
 export interface ISkillsSectionProps {
   heading: TProfileQueryResult['skillsSection']
   groups: NonNullable<TProfileQueryResult['skillGroups']>
+  sectionNr: string
 }
 
-export const SkillsSection = ({ heading, groups }: ISkillsSectionProps) => {
+export const SkillsSection = ({ heading, groups, sectionNr }: ISkillsSectionProps) => {
   if (!groups.length) {
     return null
   }
@@ -13,7 +14,7 @@ export const SkillsSection = ({ heading, groups }: ISkillsSectionProps) => {
   return (
     <section className="skills section-shell" id="expertise" aria-labelledby="skills-title">
       <div className="section-index" aria-hidden="true">
-        02
+        {sectionNr}
       </div>
 
       <div>

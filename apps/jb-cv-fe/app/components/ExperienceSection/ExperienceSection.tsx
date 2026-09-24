@@ -4,9 +4,10 @@ import { formatMonth } from '@/app/utils'
 export interface IExperienceSectionProps {
   heading: TProfileQueryResult['experienceSection']
   items: NonNullable<TProfileQueryResult['experience']>
+  sectionNr: string
 }
 
-export const ExperienceSection = ({ heading, items }: IExperienceSectionProps) => {
+export const ExperienceSection = ({ heading, items, sectionNr }: IExperienceSectionProps) => {
   if (items.length === 0) return null
 
   return (
@@ -16,7 +17,7 @@ export const ExperienceSection = ({ heading, items }: IExperienceSectionProps) =
       aria-labelledby="experience-title"
     >
       <div className="section-index" aria-hidden="true">
-        03
+        {sectionNr}
       </div>
 
       <div>

@@ -1,12 +1,14 @@
 import { PortableText } from 'next-sanity'
+
 import type { TProfileQueryResult } from '@/app/types/profile'
 
 export interface IProfileSectionProps {
   heading: TProfileQueryResult['profileSection']
   body: TProfileQueryResult['profileBody']
+  sectionNr: string
 }
 
-export const ProfileSection = ({ heading, body }: IProfileSectionProps) => {
+export const ProfileSection = ({ heading, body, sectionNr }: IProfileSectionProps) => {
   if (!heading && !body?.length) {
     return null
   }
@@ -14,7 +16,7 @@ export const ProfileSection = ({ heading, body }: IProfileSectionProps) => {
   return (
     <section className="intro section-shell" aria-labelledby="profile-title">
       <div className="section-index" aria-hidden="true">
-        01
+        {sectionNr}
       </div>
 
       <div>

@@ -35,17 +35,33 @@ export default async function HomePage() {
         cv={profile.cv}
       />
 
-      <ProfileSection heading={profile.profileSection} body={profile.profileBody} />
+      <ProfileSection heading={profile.profileSection} body={profile.profileBody} sectionNr="01" />
 
-      <SkillsSection heading={profile.skillsSection} groups={profile.skillGroups ?? []} />
+      <SkillsSection
+        heading={profile.skillsSection}
+        groups={profile.skillGroups ?? []}
+        sectionNr="02"
+      />
 
-      <ExperienceSection heading={profile.experienceSection} items={profile.experience ?? []} />
+      <ExperienceSection
+        heading={profile.experienceSection}
+        items={profile.experience ?? []}
+        sectionNr="03"
+      />
 
-      <ProjectsSection heading={profile.projectsSection} projects={profile.projects ?? []} />
+      <ProjectsSection
+        heading={profile.projectsSection}
+        projects={profile.projects ?? []}
+        sectionNr="04"
+      />
 
-      <CvChat />
+      <CvChat sectionNr="05" />
 
-      <DetailsSection education={profile.education ?? []} languages={profile.languages ?? []} />
+      <DetailsSection
+        education={profile.education ?? []}
+        languages={profile.languages ?? []}
+        sectionNr="06"
+      />
 
       <ContactSection
         heading={profile.contactHeading}

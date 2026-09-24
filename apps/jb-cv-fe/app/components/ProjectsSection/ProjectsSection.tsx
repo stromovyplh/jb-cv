@@ -3,15 +3,16 @@ import type { TProfileQueryResult } from '@/app/types/profile'
 export interface IProjectsSectionProps {
   heading: TProfileQueryResult['projectsSection']
   projects: NonNullable<TProfileQueryResult['projects']>
+  sectionNr: string
 }
 
-export const ProjectsSection = ({ heading, projects }: IProjectsSectionProps) => {
+export const ProjectsSection = ({ heading, projects, sectionNr }: IProjectsSectionProps) => {
   if (projects.length === 0) return null
 
   return (
     <section className="projects section-shell" id="projects" aria-labelledby="projects-title">
       <div className="section-index" aria-hidden="true">
-        04
+        {sectionNr}
       </div>
 
       <div>

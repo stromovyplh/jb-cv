@@ -15,7 +15,11 @@ type StreamEvent = {
   text?: string
 }
 
-export const CvChat = () => {
+export interface ICvChat {
+  sectionNr: string
+}
+
+export const CvChat = ({ sectionNr }: ICvChat) => {
   const [question, setQuestion] = useState('')
   const [messages, setMessages] = useState<Message[]>([])
   const [loading, setLoading] = useState(false)
@@ -129,7 +133,9 @@ export const CvChat = () => {
 
   return (
     <section className="section-shell" aria-labelledby="cv-chat-title">
-      <div className="section-index">05</div>
+      <div className="section-index" aria-hidden={true}>
+        {sectionNr}
+      </div>
 
       <div className={styles.content}>
         <p className="section-kicker">Ask about my CV</p>
