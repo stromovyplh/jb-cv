@@ -21,10 +21,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # The monorepo root package.json should specify its pnpm version in packageManager.
       - uses: pnpm/action-setup@v4
         with:
           run_install: false
 
+      # Match GreenGeeks' Node 22 runtime and build Linux dependencies on Linux.
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
@@ -62,17 +64,26 @@ jobs:
           for package in react react-dom @next/env @swc/helpers; do
             destination="$RUNNER_TEMP/jb-cv-deploy/$app/node_modules/$package"
             if [ ! -d "$destination" ]; then
-              source="$app/node_modules/$package"
-              if [ ! -d "$source" ]; then
-                shopt -s nullglob
-                matches=(node_modules/.pnpm/*/node_modules/$package)
-                shopt -u nullglob
-                if [ "${#matches[@]}" -ne 1 ]; then
-                  printf 'Expected one installed copy of %s; found %s\n' "$package" "${#matches[@]}" >&2
-                  exit 1
-                fi
-                source="${matches[0]}"
-              fi
+              # Resolve through the real dependency graph rather than picking
+              # a version from .pnpm by glob (there may be multiple versions).
+              source="$(node -e '
+                const path = require("node:path");
+                const {createRequire} = require("node:module");
+                const app = path.resolve(process.argv[1]);
+                const name = process.argv[2];
+                const nextDependency = name === "@next/env" || name === "@swc/helpers";
+                const base = nextDependency
+                  ? require.resolve("next", {paths: [app]})
+                  : path.join(app, "package.json");
+                const request = name === "@swc/helpers"
+                  ? "@swc/helpers/_/_interop_require_default"
+                  : name;
+                const resolved = createRequire(base).resolve(request);
+                const marker = "/node_modules/" + name + "/";
+                const index = resolved.lastIndexOf(marker);
+                if (index < 0) throw new Error("Cannot locate package root: " + resolved);
+                process.stdout.write(resolved.slice(0, index + marker.length - 1));
+              ' "$app" "$package")"
               mkdir -p "$(dirname "$destination")"
               cp -aL "$source" "$destination"
             fi
