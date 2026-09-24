@@ -42,7 +42,7 @@ jobs:
           pnpm install --frozen-lockfile
           pnpm typegen:studio
           test -f apps/jb-cv-fe/src/sanity/sanity.types.ts
-          pnpm build:web          
+          pnpm build:web
           rm -f apps/jb-cv-fe/.env.local
 
       - name: Assemble and verify standalone output
@@ -57,6 +57,26 @@ jobs:
           if [ -d "$app/public" ]; then
             cp -a "$app/public" "$RUNNER_TEMP/jb-cv-deploy/$app/"
           fi
+          # Some required packages are not placed at the app-level resolution
+          # path by Next's standalone trace with pnpm. Materialize them there.
+          for package in react react-dom @next/env @swc/helpers; do
+            destination="$RUNNER_TEMP/jb-cv-deploy/$app/node_modules/$package"
+            if [ ! -d "$destination" ]; then
+              source="$app/node_modules/$package"
+              if [ ! -d "$source" ]; then
+                shopt -s nullglob
+                matches=(node_modules/.pnpm/*/node_modules/$package)
+                shopt -u nullglob
+                if [ "${#matches[@]}" -ne 1 ]; then
+                  printf 'Expected one installed copy of %s; found %s\n' "$package" "${#matches[@]}" >&2
+                  exit 1
+                fi
+                source="${matches[0]}"
+              fi
+              mkdir -p "$(dirname "$destination")"
+              cp -aL "$source" "$destination"
+            fi
+          done
           test -f "$RUNNER_TEMP/jb-cv-deploy/$app/server.js"
           test -f "$RUNNER_TEMP/jb-cv-deploy/$app/.next/BUILD_ID"
           cd "$RUNNER_TEMP/jb-cv-deploy/$app"
