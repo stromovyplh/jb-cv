@@ -1,15 +1,17 @@
+import { notFound } from 'next/navigation'
+
+import { ContactSection } from '@/app/components/ContactSection/ContactSection'
+import { CvChat } from '@/app/components/CvChat/CvChat'
+import { DetailsSection } from '@/app/components/DetailsSection/DetailsSection'
+import { ExperienceSection } from '@/app/components/ExperienceSection/ExperienceSection'
+import { HeroHeader } from '@/app/components/HeroHeader/HeroHeader'
+import { ProfileSection } from '@/app/components/ProfileSection/ProfileSection'
+import { ProjectsSection } from '@/app/components/ProjectsSection/ProjectsSection'
+import { SkillsSection } from '@/app/components/SkillsSection/SkillsSection'
+import { profileCacheOptions } from '@/src/sanity/cache'
 import { client } from '@/src/sanity/client'
 import { PROFILE_QUERY } from '@/src/sanity/queries/profile'
-import { profileCacheOptions } from '@/src/sanity/cache'
-import { notFound } from 'next/navigation'
-import { HeroHeader } from '@/app/components/HeroHeader/HeroHeader'
 import type { PROFILE_QUERY_RESULT } from '@/src/sanity/sanity.types'
-import { ProfileSection } from '@/app/components/ProfileSection/ProfileSection'
-import { SkillsSection } from '@/app/components/SkillsSection/SkillsSection'
-import { ExperienceSection } from '@/app/components/ExperienceSection/ExperienceSection'
-import { ProjectsSection } from '@/app/components/ProjectsSection/ProjectsSection'
-import { DetailsSection } from '@/app/components/DetailsSection/DetailsSection'
-import { ContactSection } from '@/app/components/ContactSection/ContactSection'
 
 export default async function HomePage() {
   const profile = await client.fetch<PROFILE_QUERY_RESULT | null>(
@@ -40,6 +42,8 @@ export default async function HomePage() {
       <ExperienceSection heading={profile.experienceSection} items={profile.experience ?? []} />
 
       <ProjectsSection heading={profile.projectsSection} projects={profile.projects ?? []} />
+
+      <CvChat />
 
       <DetailsSection education={profile.education ?? []} languages={profile.languages ?? []} />
 
