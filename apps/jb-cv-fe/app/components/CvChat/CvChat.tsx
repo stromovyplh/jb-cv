@@ -25,11 +25,13 @@ export const CvChat = ({ sectionNr }: ICvChat) => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  const endRef = useRef<HTMLDivElement>(null)
+  const chatRef = useRef<HTMLDivElement>(null)
   const nextId = useRef(0)
 
   useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+    if (messages.length === 0) return
+
+    chatRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
   }, [messages, loading, error])
 
   const ask = async (event: SubmitEvent<HTMLFormElement>) => {
@@ -141,7 +143,7 @@ export const CvChat = ({ sectionNr }: ICvChat) => {
         <p className="section-kicker">Ask about my CV</p>
         <h2 id="cv-chat-title">Looking for a particular experience?</h2>
 
-        <div className={styles.chat}>
+        <div className={styles.chat} ref={chatRef}>
           <div
             className={styles.messages}
             role="log"
@@ -181,8 +183,6 @@ export const CvChat = ({ sectionNr }: ICvChat) => {
                 {error}
               </p>
             )}
-
-            <div ref={endRef} />
           </div>
 
           <form onSubmit={ask} className={styles.composer}>
