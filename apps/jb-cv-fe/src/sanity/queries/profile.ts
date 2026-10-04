@@ -3,6 +3,11 @@ import { defineQuery } from 'next-sanity'
 export const PROFILE_QUERY = defineQuery(`
 *[_type == "profile"][0] {
     _id,
+    seo {
+      title,
+      description,
+      "imageUrl": image.asset->url
+    },
     name,
     location,
     roles[] {

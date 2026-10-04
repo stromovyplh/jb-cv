@@ -1,14 +1,8 @@
 import './globals.css'
 
-import type { Metadata } from 'next'
 import React from 'react'
-import { PrintButton } from '@/app/components/PrintButton'
 
-export const metadata: Metadata = {
-  title: 'Jozef Balint — Senior Frontend Engineer',
-  description:
-    'Jozef Balint — Senior Frontend Engineer, Accessibility Specialist, and Frontend Dev Lead based in Lisbon.',
-}
+import { PrintButton } from '@/app/components/PrintButton'
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
