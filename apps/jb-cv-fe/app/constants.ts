@@ -1,3 +1,5 @@
+export const siteUrl = process.env.SITE_URL?.trim() || 'https://jozef-balint.com'
+
 export const proficiencyLabels: Record<string, string> = {
   native: 'Native',
   fullProfessional: 'Full Professional',

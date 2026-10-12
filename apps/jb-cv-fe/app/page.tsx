@@ -10,7 +10,7 @@ import { HeroHeader } from '@/app/components/HeroHeader/HeroHeader'
 import { ProfileSection } from '@/app/components/ProfileSection/ProfileSection'
 import { ProjectsSection } from '@/app/components/ProjectsSection/ProjectsSection'
 import { SkillsSection } from '@/app/components/SkillsSection/SkillsSection'
-import { seoDefaults } from '@/app/constants'
+import { seoDefaults, siteUrl } from '@/app/constants'
 import { profileCacheOptions } from '@/src/sanity/cache'
 import { client } from '@/src/sanity/client'
 import { PROFILE_QUERY } from '@/src/sanity/queries/profile'
@@ -37,11 +37,11 @@ export const generateMetadata = async (): Promise<Metadata> => {
     title,
     description,
     alternates: {
-      canonical: 'https://jozef-balint.com/',
+      canonical: `${siteUrl}/`,
     },
     openGraph: {
       type: 'website',
-      url: 'https://jozef-balint.com/',
+      url: `${siteUrl}/`,
       title,
       description,
       ...(imageUrl ? { images: [{ url: imageUrl }] } : {}),

@@ -1,9 +1,38 @@
 import { revalidateTag } from 'next/cache'
-import { NextRequest } from 'next/server'
+import { after, NextRequest } from 'next/server'
 import { parseBody } from 'next-sanity/webhook'
+
+import { siteUrl } from '@/app/constants'
+
+const WARM_UP_TIMEOUT_MS = 15_000
 
 interface ProfileWebhookPayload {
   _type?: string
+}
+
+/**
+ * Tag invalidations live in the memory of the process that handled the webhook,
+ * and the file system cache is only rewritten while a page renders. On shared
+ * hosting that process can be recycled before any visitor arrives, which would
+ * silently drop the invalidation. Requesting the page ourselves forces the
+ * re-render that persists the fresh output to disk.
+ */
+async function warmHomePage(): Promise<void> {
+  try {
+    const response = await fetch(new URL('/', siteUrl), {
+      cache: 'no-store',
+      signal: AbortSignal.timeout(WARM_UP_TIMEOUT_MS),
+    })
+
+    // Drain the body so the render and its cache write run to completion.
+    await response.arrayBuffer()
+
+    if (!response.ok) {
+      console.error(`Profile cache warm-up responded with ${response.status}`)
+    }
+  } catch (error) {
+    console.error('Profile cache warm-up failed:', error)
+  }
 }
 
 export async function POST(request: NextRequest) {
@@ -25,6 +54,9 @@ export async function POST(request: NextRequest) {
     }
 
     revalidateTag('profile', { expire: 0 })
+    // `revalidateTag` only queues the invalidation; Next applies it once this
+    // response is finished, so the warm-up has to run after that.
+    after(warmHomePage)
 
     return Response.json({
       revalidated: true,
